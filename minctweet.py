@@ -66,6 +66,13 @@ class FileMonitor(object):
         ln = ln.rstrip( '\n' )
         return ln
 
+def handle_log_entry( log_line, tweepy_api ):
+    """
+    This method responds to new log entries.
+    """
+    #~ to do
+    print "New log entry:", log_line
+
 def main():
     #
     # Load config
@@ -105,7 +112,7 @@ def main():
     #~ to do: connect to twitter
     #auth = tweepy.OAuthHandler( self.__consumer_key, self.__consumer_secret )
     #auth.set_access_token( self.__access_key, self.__access_secret )
-    #api = tweepy.API( auth )
+    api = None #api = tweepy.API( auth )
     
     #
     # Hook into log file
@@ -120,11 +127,13 @@ def main():
         exit()
     
     logmon = FileMonitor( mclog_fpath )
-
+    
+    print "minctweet: making your Minecraft server tweet"
+    print "monitoring log file:", mclog_fpath
+    
     while True:
         ln = logmon.nextline()
-        print ln
-        #~ to do: handling of the line of log text...
+        handle_log_entry( ln, api )
         
 if __name__ == '__main__':
     main()

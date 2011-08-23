@@ -1,0 +1,8 @@
+minctweet (Minecraft Tweet) is a simple, blandly named Python script
+that will monitor a Minecraft server log file and react to 
+chosen in-game events by pushing tweets to a Twitter account.
+
+The script uses Unix tail, which effectively restricts its use to
+Linux and OS X. Sorry to those on other platforms!
+
+Enjoy!

@@ -5,4 +5,15 @@ chosen in-game events by pushing tweets to a Twitter account.
 The script uses Unix tail, which effectively restricts its use to
 Linux and OS X. Sorry to those on other platforms!
 
+Usage:
+Execute minctweet.py.
+The script requires the path to a configuration file as an argument. 
+The configuration file should specify the location of the server log
+file and Twitter authentication information.
+See example.config for an indication of the configuration file format.
+
+Some assembly required:
+Customising responses to log events requires editing the script itself. 
+Logic for this can be found in function handle_log_entry. 
+
 Enjoy!

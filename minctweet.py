@@ -51,7 +51,7 @@ class FileMonitor(object):
         
         #
         # Burn the first line
-        #self.nextline()
+        self.nextline()
     
     def nextline( self ):
         """
@@ -70,21 +70,48 @@ def handle_log_entry( log_line, tweepy_api ):
     """
     This method responds to new log entries.
     """
-    #~ to do
-    print "New log entry:", log_line
+    f = open('tweet.log', 'a')
+    f.write(log_line+"\n")
+    f.close()
+    splitString = log_line.split()
+    
+    # Check for server coming online
+    if(len(splitString) > 2):
+    	if(splitString[3] == "Done"):
+    		tweepy_api.update_status("Server has been launched and is now online.")
+    		print "Done"
+    		
+    # Check for user tweeting to account from config
+    if(len(splitString) > 4):		
+		if(splitString[4] == "tweet"): 
+			tweetText = ""
+			for x in range(5,len(splitString)):
+				tweetText += splitString[x]+" "
+			tweepy_api.update_status(tweetText)
+			print tweetText
+	
+	# Check for user login and get the name
+    if(len(splitString) > 5):
+    	if(splitString[5] == "logged"):
+    	 	tweepy_api.update_status("User "+splitString[3]+" joined the game.")
+    		print "User ",splitString[3]," joined the game"
+    
+    # Check for user logout and get the name
+    if(len(splitString) > 6):
+    	if((splitString[4] == "lost") & (splitString[5] == "connection:")):
+    		tweepy_api.update_status("User "+splitString[3]+" left the game.")
+    		print "User ",splitString[3]," left the game"
+    
+    # Check for server going down
+    if(len(splitString) > 10):
+    	if((splitString[5] == "server") & (splitString[10] == "down.")):
+    		tweepy_api.update_status("Server has been taken offline. All connections will be lost.")
+    		print "Server has been taken offline. All connections will be lost."
+	
 
 def main():
-    #
-    # Load config
-    if len(sys.argv) <= 1:
-        print "Too few arguments: path to config file missing"
-        exit()
     
-    if len(sys.argv) >= 3:
-        print "Too many arguments: only specify config file path"
-        exit()
-    
-    config_fpath = sys.argv[1]
+    config_fpath = "/home/minecraft/minctweet/server.config"
     
     if not os.path.exists( config_fpath ):
         print "%s: file does not exist" % (config_fpath)
@@ -110,9 +137,9 @@ def main():
     access_secret = config_dict['access_secret']
     
     #~ to do: connect to twitter
-    #auth = tweepy.OAuthHandler( self.__consumer_key, self.__consumer_secret )
-    #auth.set_access_token( self.__access_key, self.__access_secret )
-    api = None #api = tweepy.API( auth )
+    auth = tweepy.OAuthHandler( consumer_key, consumer_secret )
+    auth.set_access_token( access_key, access_secret )
+    api = tweepy.API( auth )
     
     #
     # Hook into log file
